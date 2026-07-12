@@ -1,0 +1,61 @@
+$color-primary:        #0f172a;
+$color-primary-fg:     #ffffff;
+$color-background:     hsl(210, 40%, 98%);
+$color-foreground:     hsl(222, 47%, 11%);
+$color-card:           #ffffff;
+$color-border:         hsl(214, 32%, 91%);
+$color-muted:          hsl(210, 40%, 96%);
+$color-muted-fg:       hsl(215, 16%, 47%);
+$color-destructive:    hsl(0, 84%, 60%);
+$color-success:        hsl(142, 71%, 45%);
+$color-warning:        hsl(45, 93%, 47%);
+$color-info:           hsl(213, 94%, 60%);
+
+$status-active-bg:     hsl(142, 76%, 94%);
+$status-active-text:   hsl(142, 71%, 30%);
+$status-pending-bg:    hsl(45, 93%, 90%);
+$status-pending-text:  hsl(30, 80%, 35%);
+$status-cancelled-bg:  hsl(0, 84%, 94%);
+$status-cancelled-text:hsl(0, 72%, 42%);
+$status-inactive-bg:   hsl(215, 20%, 93%);
+$status-inactive-text: hsl(215, 16%, 47%);
+
+$radius-sm:   0.375rem;
+$radius-md:   0.5rem;
+$radius-lg:   0.75rem;
+$radius-xl:   1rem;
+
+$spacing-1: 0.25rem;
+$spacing-2: 0.5rem;
+$spacing-3: 0.75rem;
+$spacing-4: 1rem;
+$spacing-5: 1.25rem;
+$spacing-6: 1.5rem;
+$spacing-8: 2rem;
+$spacing-10: 2.5rem;
+$spacing-12: 3rem;
+
+$font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+$font-size-xs:   0.75rem;
+$font-size-sm:   0.875rem;
+$font-size-base: 1rem;
+$font-size-lg:   1.125rem;
+$font-size-xl:   1.25rem;
+$font-size-2xl:  1.5rem;
+$font-weight-normal:   400;
+$font-weight-medium:   500;
+$font-weight-semibold: 600;
+$font-weight-bold:     700;
+
+$shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.08);
+$shadow-md: 0 4px 8px -2px rgb(0 0 0 / 0.12);
+
+$sidebar-width: 220px;
+$topbar-height: 56px;
+
+$z-dropdown: 1000;
+$z-modal-backdrop: 1040;
+$z-modal: 1050;
+$z-toast: 1080;
+
+$transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);

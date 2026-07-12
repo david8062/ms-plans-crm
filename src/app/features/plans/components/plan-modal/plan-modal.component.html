@@ -1,0 +1,137 @@
+<div class="modal-backdrop" (click)="cancelled.emit()"></div>
+<div class="modal-panel">
+  <div class="modal-panel__header">
+    <h2>{{ title }}</h2>
+    <button class="modal-panel__close" (click)="cancelled.emit()">
+      <ng-icon name="heroXMark" size="20" />
+    </button>
+  </div>
+
+  <div class="modal-tabs">
+    <button [class.active]="activeTab() === 'info'"     (click)="activeTab.set('info')">Información</button>
+    @if (plan) {
+      <button [class.active]="activeTab() === 'prices'"   (click)="activeTab.set('prices')">Precios</button>
+      <button [class.active]="activeTab() === 'features'" (click)="activeTab.set('features')">Features</button>
+    }
+  </div>
+
+  <div class="modal-panel__body">
+    @if (activeTab() === 'info') {
+      <div class="form-group">
+        <label>Nombre *</label>
+        <input type="text" [(ngModel)]="name" placeholder="Ej: Profesional" />
+      </div>
+      <div class="form-group">
+        <label>Slug *</label>
+        <input type="text" [(ngModel)]="slug" placeholder="Ej: profesional" />
+      </div>
+      <div class="form-group">
+        <label>Descripción</label>
+        <textarea [(ngModel)]="description" placeholder="Descripción del plan..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Orden de visualización</label>
+        <input type="number" [(ngModel)]="displayOrder" min="0" />
+      </div>
+      <div class="section-label mt">Período de prueba y cobranza</div>
+      <div class="limits-grid">
+        <div class="form-group">
+          <label>Días de prueba gratuita (vacío = sin prueba)</label>
+          <input type="number" [(ngModel)]="trialDays" min="0" placeholder="Ej: 14" />
+        </div>
+        <div class="form-group">
+          <label>Días de gracia tras vencer (vacío = 7)</label>
+          <input type="number" [(ngModel)]="graceDays" min="0" placeholder="Ej: 7" />
+        </div>
+      </div>
+      <div class="section-label mt">Límites del plan</div>
+      <div class="limits-grid">
+        <div class="form-group">
+          <label>Máx. usuarios</label>
+          <input type="number" [(ngModel)]="maxUsers" min="1" placeholder="Ej: 5" />
+        </div>
+        <div class="form-group">
+          <label>Máx. casos</label>
+          <input type="number" [(ngModel)]="maxCases" min="1" placeholder="Ej: 100" />
+        </div>
+        <div class="form-group">
+          <label>Máx. almacen. (GB)</label>
+          <input type="number" [(ngModel)]="maxStorageGb" min="1" placeholder="Ej: 5" />
+        </div>
+        <div class="form-group">
+          <label>Máx. tokens IA / mes</label>
+          <input type="number" [(ngModel)]="maxAiTokensMonthly" min="1" placeholder="Ej: 5000000" />
+        </div>
+      </div>
+    }
+
+    @if (activeTab() === 'prices' && plan) {
+      <div class="section-label">Precios actuales</div>
+      @if (plan.prices.length === 0) {
+        <p class="empty-msg">Sin precios. Agrega uno abajo.</p>
+      }
+      @for (p of plan.prices; track p.id) {
+        <div class="list-row">
+          <span>{{ p.billingCycle === 'MONTHLY' ? 'Mensual' : 'Anual' }}</span>
+          <span>{{ p.finalPrice | number:'1.0-0' }} {{ p.currency }}</span>
+          @if (p.discountPercent) { <span class="dim">-{{ p.discountPercent }}%</span> }
+        </div>
+      }
+
+      <div class="section-label mt">Agregar precio</div>
+      <div class="inline-form">
+        <select [(ngModel)]="newPriceCycle">
+          <option value="MONTHLY">Mensual</option>
+          <option value="ANNUAL">Anual</option>
+        </select>
+        <input type="number" [(ngModel)]="newPriceBase" placeholder="Precio base" min="0" />
+        <input type="number" [(ngModel)]="newPriceDiscount" placeholder="Descuento %" min="0" max="100" />
+        <button class="btn btn-secondary btn-sm" (click)="addPrice()">
+          <ng-icon name="heroPlusCircle" size="14" /> Agregar
+        </button>
+      </div>
+    }
+
+    @if (activeTab() === 'features' && plan) {
+      <div class="section-label">Features actuales</div>
+      @if (plan.features.length === 0) {
+        <p class="empty-msg">Sin features. Agrega uno abajo.</p>
+      }
+      @for (f of plan.features; track f.id) {
+        <div class="list-row">
+          <span>{{ f.label }}</span>
+          <strong>{{ f.featureValue === '-1' ? '∞' : f.featureValue }}</strong>
+          <button class="action-btn danger" (click)="deleteFeature(f.id)">
+            <ng-icon name="heroTrash" size="12" />
+          </button>
+        </div>
+      }
+
+      <div class="section-label mt">Agregar feature</div>
+      <div class="form-group">
+        <label>Key (ej: max_users)</label>
+        <input type="text" [(ngModel)]="newFeatureKey" />
+      </div>
+      <div class="form-group">
+        <label>Label (ej: Usuarios máximos)</label>
+        <input type="text" [(ngModel)]="newFeatureLabel" />
+      </div>
+      <div class="form-group">
+        <label>Valor (-1 = ilimitado)</label>
+        <input type="text" [(ngModel)]="newFeatureValue" />
+      </div>
+      <button class="btn btn-secondary btn-sm" (click)="addFeature()">
+        <ng-icon name="heroPlusCircle" size="14" /> Agregar feature
+      </button>
+    }
+  </div>
+
+  @if (activeTab() === 'info') {
+    <div class="modal-panel__footer">
+      <button class="btn btn-ghost" (click)="cancelled.emit()">Cancelar</button>
+      <button class="btn btn-primary" (click)="savePlan()" [disabled]="saving() || !name || !slug">
+        {{ saving() ? 'Guardando...' : 'Guardar' }}
+      </button>
+    </div>
+  }
+</div>

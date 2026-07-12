@@ -1,0 +1,50 @@
+export const MsPlansEndpoints = {
+  auth: {
+    login: '/auth/login',
+  },
+  plans: {
+    root:             '/plans',
+    public:           '/public/plans',
+    byId:             (id: string) => `/plans/${id}`,
+    prices:           (planId: string) => `/plans/${planId}/prices`,
+    priceById:        (planId: string, priceId: string) => `/plans/${planId}/prices/${priceId}`,
+    features:         (planId: string) => `/plans/${planId}/features`,
+    featureById:      (planId: string, featureId: string) => `/plans/${planId}/features/${featureId}`,
+  },
+  subscriptions: {
+    root:             '/subscriptions',
+    byId:             (id: string) => `/subscriptions/${id}`,
+    byTenant:         (tenantId: string) => `/subscriptions/tenant/${tenantId}`,
+    activate:         (id: string) => `/subscriptions/${id}/activate`,
+    suspend:          (id: string) => `/subscriptions/${id}/suspend`,
+    cancel:           (id: string) => `/subscriptions/${id}/cancel`,
+    convertTrial:     (id: string) => `/subscriptions/${id}/convert-trial`,
+    tenantLimits:     (tenantId: string) => `/subscriptions/tenant/${tenantId}/limits`,
+    runExpiration:    '/subscriptions/run-expiration',
+  },
+  analytics: {
+    revenue: '/analytics/revenue',
+  },
+  modules: {
+    root:    '/modules',
+    active:  '/modules/active',
+    byId:    (id: string) => `/modules/${id}`,
+    forSubscription:   (subId: string) => `/subscriptions/${subId}/modules`,
+    removeFromSub:     (subId: string, slug: string) => `/subscriptions/${subId}/modules/${slug}`,
+    tenantModules:     (tenantId: string) => `/subscriptions/tenant/${tenantId}/modules`,
+  },
+  payments: {
+    root:             '/payments',
+    byTenant:         (tenantId: string) => `/payments/tenant/${tenantId}`,
+    bySubscription:   (subId: string) => `/payments/subscription/${subId}`,
+    fail:             (id: string) => `/payments/${id}/fail`,
+    refund:           (id: string) => `/payments/${id}/refund`,
+  },
+  churn: {
+    root:             '/churn',
+    summary:          '/churn/summary',
+    byTenant:         (tenantId: string) => `/churn/tenant/${tenantId}`,
+    byReason:         (reason: string) => `/churn/reason/${reason}`,
+    byId:             (id: string) => `/churn/${id}`,
+  },
+};

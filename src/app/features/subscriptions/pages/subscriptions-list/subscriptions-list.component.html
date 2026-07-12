@@ -1,0 +1,96 @@
+<div class="page-header">
+  <div>
+    <h1>Suscripciones</h1>
+    <p>{{ totalElements }} suscripciones en total</p>
+  </div>
+  <div style="display:flex; gap:0.5rem;">
+    <button class="btn btn-secondary" (click)="runExpiration()" [disabled]="processingExpiration()">
+      <ng-icon name="heroClock" size="16" /> {{ processingExpiration() ? 'Procesando...' : 'Procesar vencimientos' }}
+    </button>
+    <button class="btn btn-primary" (click)="showModal.set(true)">
+      <ng-icon name="heroPlusCircle" size="16" /> Nueva suscripción
+    </button>
+  </div>
+</div>
+
+@if (loading()) {
+  <p style="color: var(--muted-fg, #888); padding: 2rem 0;">Cargando...</p>
+} @else {
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Tenant ID</th>
+          <th>Plan</th>
+          <th>Ciclo</th>
+          <th>Estado</th>
+          <th>Vence / Prueba hasta</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (items().length === 0) {
+          <tr><td colspan="6" style="text-align:center; padding: 2rem; color:#888;">Sin suscripciones</td></tr>
+        }
+        @for (sub of items(); track sub.id) {
+          <tr>
+            <td><code style="font-size:0.75rem">{{ sub.tenantId }}</code></td>
+            <td>{{ sub.planName }}</td>
+            <td>{{ sub.billingCycle === 'MONTHLY' ? 'Mensual' : 'Anual' }}</td>
+            <td><span class="badge {{ statusClass(sub.status) }}">{{ statusLabel(sub.status) }}</span></td>
+            <td>
+              @if (sub.status === 'TRIAL' && sub.trialEndsAt) {
+                <span style="color: hsl(32,95%,35%); font-size:0.8rem">
+                  Prueba hasta {{ sub.trialEndsAt | date:'dd/MM/yyyy' }}
+                </span>
+              } @else {
+                {{ sub.currentPeriodEnd | date:'dd/MM/yyyy' }}
+              }
+            </td>
+            <td class="actions-cell">
+              @if (sub.status === 'TRIAL') {
+                <button class="action-btn" (click)="convertTrial(sub)">
+                  <ng-icon name="heroArrowPath" size="14" /> Convertir
+                </button>
+              }
+              @if (canActivate(sub.status)) {
+                <button class="action-btn" (click)="activate(sub)">
+                  <ng-icon name="heroCheckCircle" size="14" /> {{ sub.status === 'PENDING' ? 'Activar' : 'Reactivar' }}
+                </button>
+              }
+              @if (sub.status === 'ACTIVE' || sub.status === 'PAST_DUE') {
+                <button class="action-btn" (click)="suspend(sub)">
+                  <ng-icon name="heroPauseCircle" size="14" /> Suspender
+                </button>
+              }
+              @if (sub.status !== 'CANCELLED') {
+                <button class="action-btn" (click)="openModules(sub)">
+                  <ng-icon name="heroPuzzlePiece" size="14" /> Módulos
+                </button>
+                <button class="action-btn danger" (click)="cancel(sub)">
+                  <ng-icon name="heroXCircle" size="14" /> Cancelar
+                </button>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    <div class="pagination">
+      <button (click)="prevPage()" [disabled]="page === 0">← Anterior</button>
+      <span>Pág. {{ page + 1 }} / {{ totalPages }}</span>
+      <button (click)="nextPage()" [disabled]="page >= totalPages - 1">Siguiente →</button>
+    </div>
+  </div>
+}
+
+@if (showModal()) {
+  <app-subscription-modal (saved)="onSaved()" (cancelled)="showModal.set(false)" />
+}
+
+@if (showModulesModal() && selectedSub()) {
+  <app-subscription-modules-modal
+    [sub]="selectedSub()!"
+    (saved)="onModulesSaved()"
+    (cancelled)="showModulesModal.set(false)" />
+}

@@ -1,0 +1,67 @@
+<div class="page-header">
+  <div>
+    <h1>Churn</h1>
+    <p>Clientes perdidos — {{ totalElements }} registros</p>
+  </div>
+  <button class="btn btn-primary" (click)="openCreate()">
+    <ng-icon name="heroPlusCircle" size="16" /> Registrar churn
+  </button>
+</div>
+
+@if (summary(); as s) {
+  <div class="summary-cards">
+    <div class="card summary-card">
+      <p class="summary-card__label">Total churned</p>
+      <p class="summary-card__value">{{ s.totalChurned }}</p>
+    </div>
+    <div class="card summary-card">
+      <p class="summary-card__label">MRR perdido</p>
+      <p class="summary-card__value">{{ s.totalMrrLost | number:'1.0-0' }} COP</p>
+    </div>
+  </div>
+}
+
+@if (loading()) {
+  <p style="color:#888;padding:2rem 0;">Cargando...</p>
+} @else {
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Tenant</th>
+          <th>Plan</th>
+          <th>Razón</th>
+          <th>MRR perdido</th>
+          <th>Fecha churn</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (items().length === 0) {
+          <tr><td colspan="6" style="text-align:center;padding:2rem;color:#888;">Sin registros</td></tr>
+        }
+        @for (c of items(); track c.id) {
+          <tr>
+            <td>{{ c.tenantName || c.tenantId }}</td>
+            <td>{{ c.planName ?? '—' }}</td>
+            <td>{{ reasonLabel(c.churnReason) }}</td>
+            <td>{{ c.mrrLost ? ((c.mrrLost | number:'1.0-0') + ' ' + (c.currency ?? 'COP')) : '—' }}</td>
+            <td>{{ c.churnedAt | date:'dd/MM/yyyy' }}</td>
+            <td>
+              <button class="action-btn" (click)="openEdit(c)">Editar</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    <div class="pagination">
+      <button (click)="prevPage()" [disabled]="page === 0">← Anterior</button>
+      <span>Pág. {{ page + 1 }} / {{ totalPages }}</span>
+      <button (click)="nextPage()" [disabled]="page >= totalPages - 1">Siguiente →</button>
+    </div>
+  </div>
+}
+
+@if (showModal()) {
+  <app-churn-modal [churn]="editTarget()" (saved)="onSaved()" (cancelled)="showModal.set(false)" />
+}

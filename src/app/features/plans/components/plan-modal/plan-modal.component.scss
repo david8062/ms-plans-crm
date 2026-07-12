@@ -1,0 +1,70 @@
+@use 'variables' as *;
+
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgb(0 0 0 / 0.4);
+  z-index: $z-modal-backdrop;
+}
+.modal-panel {
+  position: fixed; top: 0; right: 0; height: 100vh; width: 520px;
+  background: $color-card; z-index: $z-modal;
+  display: flex; flex-direction: column;
+  box-shadow: -4px 0 24px rgb(0 0 0 / 0.12);
+
+  &__header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: $spacing-5 $spacing-6;
+    border-bottom: 1px solid $color-border;
+    h2 { font-size: $font-size-lg; font-weight: $font-weight-semibold; }
+  }
+  &__close {
+    background: none; border: none; color: $color-muted-fg; cursor: pointer;
+    line-height: 0;
+    &:hover { color: $color-foreground; }
+  }
+  &__body {
+    flex: 1; overflow-y: auto; padding: $spacing-5 $spacing-6;
+    display: flex; flex-direction: column; gap: $spacing-4;
+  }
+  &__footer {
+    display: flex; justify-content: flex-end; gap: $spacing-3;
+    padding: $spacing-4 $spacing-6;
+    border-top: 1px solid $color-border;
+  }
+}
+
+.modal-tabs {
+  display: flex; gap: 0; border-bottom: 1px solid $color-border;
+  button {
+    padding: $spacing-3 $spacing-5; background: none; border: none;
+    border-bottom: 2px solid transparent; font-size: $font-size-sm;
+    font-weight: $font-weight-medium; color: $color-muted-fg; cursor: pointer;
+    margin-bottom: -1px;
+    &.active { color: $color-primary; border-bottom-color: $color-primary; }
+    &:hover:not(.active) { color: $color-foreground; }
+  }
+}
+
+.section-label {
+  font-size: $font-size-xs; font-weight: $font-weight-semibold;
+  text-transform: uppercase; letter-spacing: 0.05em; color: $color-muted-fg;
+  &.mt { margin-top: $spacing-4; }
+}
+
+.list-row {
+  display: flex; align-items: center; gap: $spacing-3;
+  padding: $spacing-2 $spacing-3; background: $color-muted;
+  border-radius: $radius-md; font-size: $font-size-sm;
+  span:first-child { flex: 1; }
+}
+
+.inline-form {
+  display: flex; gap: $spacing-2; flex-wrap: wrap; align-items: flex-end;
+  select, input { padding: $spacing-2 $spacing-3; border: 1px solid $color-border; border-radius: $radius-md; font-size: $font-size-sm; flex: 1; min-width: 80px; }
+}
+
+.empty-msg { font-size: $font-size-sm; color: $color-muted-fg; padding: $spacing-2 0; }
+.dim { color: $color-muted-fg; font-size: $font-size-xs; }
+
+.limits-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: $spacing-3;
+}

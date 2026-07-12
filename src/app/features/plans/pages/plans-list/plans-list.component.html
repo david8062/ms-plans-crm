@@ -1,0 +1,77 @@
+<div class="page-header">
+  <div>
+    <h1>Planes</h1>
+    <p>Gestión de planes de suscripción</p>
+  </div>
+  <button class="btn btn-primary" (click)="openCreate()">
+    <ng-icon name="heroPlusCircle" size="16" /> Nuevo plan
+  </button>
+</div>
+
+@if (loading()) {
+  <p class="loading-msg">Cargando planes...</p>
+} @else if (plans().length === 0) {
+  <div class="empty-state">
+    <ng-icon name="heroDocumentText" size="48" />
+    <p>No hay planes registrados</p>
+    <button class="btn btn-primary" (click)="openCreate()">Crear primer plan</button>
+  </div>
+} @else {
+  <div class="plans-grid">
+    @for (plan of plans(); track plan.id) {
+      <div class="plan-card">
+        <div class="plan-card__header">
+          <div>
+            <h3>{{ plan.name }}</h3>
+            <span class="plan-card__slug">{{ plan.slug }}</span>
+          </div>
+          <div class="plan-card__badge">
+            @if (plan.isActive) {
+              <span class="badge badge-active">Activo</span>
+            } @else {
+              <span class="badge badge-cancelled">Inactivo</span>
+            }
+          </div>
+        </div>
+
+        @if (plan.description) {
+          <p class="plan-card__desc">{{ plan.description }}</p>
+        }
+
+        <div class="plan-card__prices">
+          @for (price of plan.prices; track price.id) {
+            <div class="price-row">
+              <span>{{ price.billingCycle === 'MONTHLY' ? 'Mensual' : 'Anual' }}</span>
+              <strong>{{ price.finalPrice | number:'1.0-0' }} {{ price.currency }}</strong>
+              @if (price.discountPercent) {
+                <span class="price-discount">-{{ price.discountPercent }}%</span>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="plan-card__features">
+          @for (f of plan.features; track f.id) {
+            <div class="feature-row">
+              <span>{{ f.label }}</span>
+              <strong>{{ f.featureValue === '-1' ? '∞' : f.featureValue }}</strong>
+            </div>
+          }
+        </div>
+
+        <div class="plan-card__actions">
+          <button class="action-btn" (click)="openEdit(plan)">
+            <ng-icon name="heroPencilSquare" size="14" /> Editar
+          </button>
+          <button class="action-btn danger" (click)="deactivate(plan)">
+            <ng-icon name="heroTrash" size="14" /> Desactivar
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+}
+
+@if (showModal()) {
+  <app-plan-modal [plan]="editingPlan()" (saved)="onSaved()" (cancelled)="closeModal()" />
+}

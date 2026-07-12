@@ -1,0 +1,61 @@
+<div class="page-header">
+  <div>
+    <h1>Pagos</h1>
+    <p>{{ totalElements }} registros</p>
+  </div>
+  <button class="btn btn-primary" (click)="showModal.set(true)">
+    <ng-icon name="heroPlusCircle" size="16" /> Registrar pago
+  </button>
+</div>
+
+@if (loading()) {
+  <p style="color:#888; padding: 2rem 0;">Cargando...</p>
+} @else {
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Tenant</th>
+          <th>Suscripción</th>
+          <th>Monto</th>
+          <th>Gateway</th>
+          <th>Estado</th>
+          <th>Fecha</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (items().length === 0) {
+          <tr><td colspan="7" style="text-align:center;padding:2rem;color:#888;">Sin pagos</td></tr>
+        }
+        @for (p of items(); track p.id) {
+          <tr>
+            <td><code>{{ p.tenantId | slice:0:8 }}...</code></td>
+            <td><code>{{ p.subscriptionId | slice:0:8 }}...</code></td>
+            <td><strong>{{ p.amount | number:'1.0-0' }}</strong> {{ p.currency }}</td>
+            <td>{{ p.gateway }}</td>
+            <td><span class="badge {{ statusClass(p.status) }}">{{ statusLabel(p.status) }}</span></td>
+            <td>{{ p.paidAt ? (p.paidAt | date:'dd/MM/yyyy') : '—' }}</td>
+            <td class="actions-cell">
+              @if (p.status === 'PAID') {
+                <button class="action-btn danger" (click)="refund(p)">Reembolsar</button>
+              }
+              @if (p.status === 'PENDING') {
+                <button class="action-btn danger" (click)="markFailed(p)">Marcar fallido</button>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    <div class="pagination">
+      <button (click)="prevPage()" [disabled]="page === 0">← Anterior</button>
+      <span>Pág. {{ page + 1 }} / {{ totalPages }}</span>
+      <button (click)="nextPage()" [disabled]="page >= totalPages - 1">Siguiente →</button>
+    </div>
+  </div>
+}
+
+@if (showModal()) {
+  <app-payment-modal (saved)="onSaved()" (cancelled)="showModal.set(false)" />
+}
