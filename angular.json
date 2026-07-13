@@ -56,7 +56,9 @@
               "src/styles/global.scss"
             ],
             "stylePreprocessorOptions": {
-              "includePaths": ["src/styles"]
+              "includePaths": [
+                "src/styles"
+              ]
             }
           },
           "configurations": {
@@ -103,6 +105,9 @@
           "options": {
             "port": 4201
           }
+        },
+        "test": {
+          "builder": "@angular/build:unit-test"
         }
       }
     }
